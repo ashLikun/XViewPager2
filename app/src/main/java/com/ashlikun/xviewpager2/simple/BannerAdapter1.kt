@@ -19,7 +19,7 @@ object BannerAdapter {
             "http://img.mukewang.com/54bf7e1f000109c506000338-590-330.jpg",
             "http://upload.techweb.com.cn/2015/0114/1421211858103.jpg",
             "http://img1.cache.netease.com/catchpic/A/A0/A0153E1AEDA115EAE7061A0C7EBB69D2.jpg",
-            "http://image.tianjimedia.com/uploadImages/2015/202/27/57RF8ZHG8A4T_5020a2a4697650b89" +
+            "http://image.tia16/njimedia.com/uploadImages/2015/202/27/57RF8ZHG8A4T_5020a2a4697650b89" +
                     "c394237ba9ffbb45fe8555a2cbec-6O6nmI_fw658.jpg")
     val RESURL2 = listOf(
             "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4135477902,3355939884&fm=26&gp=0.jpg",
