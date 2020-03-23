@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--是否可以循环 默认true-->
+    <attr name="banner_canLoop" format="boolean" />
+    <!--自动播放时间间隔 默认5000-->
+    <attr name="banner_turningTime" format="integer" />
+    <!--是否可以自动定时翻页-->
+    <attr name="banner_isAutoTurning" format="boolean" />
+    <!--是否只有一条数据的时候禁用翻页, 默认true-->
+    <attr name="banner_isOneDataOffLoopAndTurning" format="boolean" />
+
+    <!--Indicatorde 属性-->
+    <!--对齐方式-->
+    <attr name="ind_gravity">
+        <flag name="top" value="0x30" />
+        <flag name="bottom" value="0x50" />
+        <flag name="left" value="0x03" />
+        <flag name="right" value="0x05" />
+        <flag name="center_vertical" value="0x10" />
+        <flag name="center_horizontal" value="0x01" />
+        <flag name="center" value="0x11" />
+    </attr>
+    <!--间距-->
+    <attr name="ind_space" format="dimension" />
+    <!--未选中的资源Id-->
+    <attr name="ind_no_select" format="reference" />
+    <!--选中的资源Id-->
+    <attr name="ind_select" format="reference" />
+    <!--比例   默认16/9.0f-->
+    <attr name="xvp_ratio" format="reference|float"></attr>
+    <!-- 比例参考方向-->
+    <attr name="xvp_ratio_orientation">
+        <enum name="width" value="0" />
+        <enum name="height" value="1" />
+    </attr>
+    <!-- 页面切换速度,值越大滑动越慢，滑动太快会使3d效果不明显 Ms     -->
+    <attr name="xvp_scrollDuration" format="integer"></attr>
+    <!--圆角半径-->
+    <attr name="xvp_radius" format="reference|dimension"></attr>
+    <attr name="xvp_radiusLeftTop" format="reference|dimension"></attr>
+    <attr name="xvp_radiusRightTop" format="reference|dimension"></attr>
+    <attr name="xvp_radiusRightBottom" format="reference|dimension"></attr>
+    <attr name="xvp_radiusLeftBottom" format="reference|dimension"></attr>
+    <!--是否可以滑动-->
+    <attr name="xvp_isCanTouchScroll" format="boolean"></attr>
+
+    <declare-styleable name="IBannerIndicator">
+        <attr name="ind_gravity"></attr>
+        <attr name="ind_space"></attr>
+        <attr name="ind_no_select"></attr>
+        <attr name="ind_select"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="ConvenientBanner">
+        <attr name="ind_style">
+            <!--默认指示器-->
+            <enum name="ind_default" value="1"></enum>
+            <!--缩放的指示器-->
+            <enum name="ind_zoom" value="2"></enum>
+            <!--平移的指示器-->
+            <enum name="ind_trans" value="3"></enum>
+        </attr>
+
+        <!--指示器的-->
+        <attr name="ind_gravity"></attr>
+        <attr name="ind_space"></attr>
+        <attr name="ind_no_select"></attr>
+        <attr name="ind_select"></attr>
+
+    </declare-styleable>
+
+    <declare-styleable name="BannerViewPager">
+        <attr name="banner_canLoop"></attr>
+        <attr name="banner_turningTime"></attr>
+        <attr name="banner_isOneDataOffLoopAndTurning"></attr>
+        <attr name="banner_isAutoTurning"></attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="XViewPager">
+        <attr name="android:orientation"/>
+        <!--比例   默认16/9.0f-->
+        <attr name="xvp_ratio"></attr>
+        <!--参考方向-->
+        <attr name="xvp_ratio_orientation"></attr>
+
+        <!--ViewPager是否可以滑动-->
+        <attr name="xvp_isCanTouchScroll"></attr>
+        <!-- 页面切换速度,值越大滑动越慢，滑动太快会使3d效果不明显 Ms   -->
+        <attr name="xvp_scrollDuration"></attr>
+        <!--圆角半径-->
+        <attr name="xvp_radius"></attr>
+        <attr name="xvp_radiusLeftTop"></attr>
+        <attr name="xvp_radiusRightTop"></attr>
+        <attr name="xvp_radiusRightBottom"></attr>
+        <attr name="xvp_radiusLeftBottom"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="FragmentLayout">
+        <attr name="fl_maxCache" format="integer"></attr>
+    </declare-styleable>
+</resources>
