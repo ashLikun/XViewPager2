@@ -65,7 +65,7 @@ dependencies {
              <attr name="ind_no_select" format="reference" />
              <!--选中的资源Id-->
              <attr name="ind_select" format="reference" />
-             <!--比例   默认16/9.0f-->
+             <!--比例   默认没有-->
              <attr name="xvp_ratio" format="reference|float"></attr>
              <!-- 比例参考方向-->
              <attr name="xvp_ratio_orientation">

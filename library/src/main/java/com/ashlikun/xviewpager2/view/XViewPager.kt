@@ -142,7 +142,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private fun initView(context: Context, attrs: AttributeSet?) {
         touchSlop = ViewConfiguration.get(getContext()).scaledTouchSlop
         val a = context.obtainStyledAttributes(attrs, R.styleable.XViewPager)
-        ratio = a.getFloat(R.styleable.XViewPager_xvp_ratio, 16 / 9f)
+        ratio = a.getFloat(R.styleable.XViewPager_xvp_ratio, 0f)
         ratioOrientation = a.getInt(R.styleable.XViewPager_xvp_ratio_orientation, ratioOrientation)
         isUserInputEnabled = a.getBoolean(R.styleable.XViewPager_xvp_isCanTouchScroll, true)
         scrollDuration = a.getInt(R.styleable.XViewPager_xvp_scrollDuration, scrollDuration)
