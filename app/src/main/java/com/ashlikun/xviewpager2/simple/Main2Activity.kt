@@ -19,17 +19,8 @@ import kotlinx.android.synthetic.main.activity_main2.*
  * 功能介绍：
  */
 class Main2Activity : AppCompatActivity() {
-    var adapter: FragmentPagerAdapter? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
-        FragmentUtils.removeAll(supportFragmentManager)
-        swipeRefresh.setOnRefreshListener {
-            Handler().postDelayed({
-                swipeRefresh.isRefreshing = false
-            }, 1000)
-        }
-        adapter = create(this)
+    val adapter: FragmentPagerAdapter by lazy {
+        FragmentPagerAdapter.Builder.create(this)
                 .addItem("/Fragment/test").setId("1").ok()
                 .addItem("/Fragment/test").setId("2").ok()
                 .addItem("/Fragment/test").setId("3").ok()
@@ -39,13 +30,19 @@ class Main2Activity : AppCompatActivity() {
                 .addItem("/Fragment/test").setId("7").ok()
                 .setCache(true)
                 .build()
-        //        fragmentLayout.setOffscreenPageLimit(4);
-//        fragmentLayout.setScrollMode(ScrollMode.VERTICAL);
-//        fragmentLayout.setScrollMode(ScrollMode.HORIZONTAL);
-        fragmentLayout.setAdapter(adapter!!)
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main2)
+        FragmentUtils.removeAll(supportFragmentManager)
+        swipeRefresh.setOnRefreshListener {
+            Handler().postDelayed({
+                swipeRefresh.isRefreshing = false
+            }, 1000)
+        }
+        fragmentLayout.setOffscreenPageLimit(2)
+        fragmentLayout.setAdapter(adapter)
         fragmentLayout.setRefreshLayout(swipeRefresh)
-        val recyclerView = fragmentLayout.viewPager.getChildAt(0) as RecyclerView
-        recyclerView.isNestedScrollingEnabled = false
     }
 
     fun onClick1(view: View?) {
