@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.ashlikun.xviewpager2.ViewPagerUtils
-import com.ashlikun.xviewpager2.listener.OnItemClickListener
 import com.ashlikun.xviewpager2.adapter.BasePageAdapter.MyViewHolder
+import com.ashlikun.xviewpager2.listener.OnItemClickListener
 
 /**
  * @author　　: 李坤
@@ -59,7 +59,14 @@ open abstract class BasePageAdapter<T>(var context: Context, data: List<T>? = nu
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(createView(context))
+        val view = createView(context)
+        if (view.layoutParams == null) {
+            view.layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        } else {
+            view.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+            view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        return MyViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
