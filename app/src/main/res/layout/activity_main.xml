@@ -27,11 +27,11 @@
 
                 <com.ashlikun.xviewpager2.ConvenientBanner
                     android:id="@+id/convenientBanner"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="400dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     app:banner_isAutoTurning="false"
                     app:banner_isOneDataOffLoopAndTurning="true"
                     app:banner_turningTime="2500"
@@ -40,7 +40,8 @@
                     app:ind_space="10dp"
                     app:ind_style="ind_trans"
                     app:xvp_radius="20dp"
-                    app:xvp_ratio_orientation="height" />
+                    app:xvp_ratio="1.77"
+                    app:xvp_ratio_orientation="width" />
 
                 <com.ashlikun.xviewpager2.view.BannerViewPager
                     android:id="@+id/bannerViewPager"

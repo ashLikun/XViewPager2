@@ -211,24 +211,20 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 val distanceX = Math.abs(endX - startX)
                 val distanceY = Math.abs(endY - startY)
                 //这里只处理水平的
-                if (viewPager!!.orientation == ViewPager2.ORIENTATION_HORIZONTAL) {
+                if (isHorizontal()) {
                     if (distanceX > touchSlop && distanceX > distanceY) {
                         if (parent != null) {
                             parent.requestDisallowInterceptTouchEvent(true)
                         }
-                        if (refreshLayout != null) {
-                            refreshLayout!!.isEnabled = false
-                        }
+                        refreshLayout?.isEnabled = false
                     }
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (viewPager!!.orientation == ViewPager2.ORIENTATION_HORIZONTAL) {
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (isHorizontal()) {
                 if (parent != null) {
                     parent.requestDisallowInterceptTouchEvent(false)
                 }
-                if (refreshLayout != null) {
-                    refreshLayout!!.isEnabled = true
-                }
+                refreshLayout?.isEnabled = true
             }
             else -> {
             }

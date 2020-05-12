@@ -42,7 +42,6 @@ class Main2Activity : AppCompatActivity() {
         }
         fragmentLayout.setOffscreenPageLimit(2)
         fragmentLayout.setAdapter(adapter)
-        fragmentLayout.setRefreshLayout(swipeRefresh)
     }
 
     fun onClick1(view: View?) {
