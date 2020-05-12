@@ -26,7 +26,7 @@ import java.util.*
  */
 
 class FragmentPagerAdapter private constructor(builder: Builder)
-    : FragmentStateAdapter2(builder.fm, builder.mLifecycle), TabConfigurationStrategy {
+    : FragmentStateAdapter2(builder.fm, builder.mLifecycle) {
     companion object {
         /**
          * 传递给fragment的参数
@@ -77,7 +77,7 @@ class FragmentPagerAdapter private constructor(builder: Builder)
     }
 
     fun getPagerItem(position: Int): FragmentPagerItem {
-        return pagerItems!![position]
+        return getPagerItems()!!.getOrElse(position) { FragmentPagerItem.get("XViewPager_error") }
     }
 
     fun setCache(cache: Boolean) {
@@ -125,7 +125,7 @@ class FragmentPagerAdapter private constructor(builder: Builder)
     fun findIdPosition(id: String?): Int {
         try {
             for (i in 0 until itemCount) {
-                if (TextUtils.equals(id, getPagerItem(i).getId())) {
+                if (TextUtils.equals(id, getPagerItem(i).id)) {
                     return i
                 }
             }
@@ -139,11 +139,9 @@ class FragmentPagerAdapter private constructor(builder: Builder)
     }
 
     /**
-     * 设置标题
+     *标题
      */
-    override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-        tab.text = pagerItems!![position].getTitle()
-    }
+    fun getTitle(position: Int) = getPagerItem(position).title
 
     fun <T : Fragment> getCurrentFragment(): T? {
         return if (mCacheFragment == null)
@@ -210,7 +208,7 @@ class FragmentPagerAdapter private constructor(builder: Builder)
             return this
         }
 
-        fun addItem(itemPath: String?): FragmentPagerItem {
+        fun addItem(itemPath: String): FragmentPagerItem {
             val item = FragmentPagerItem.get(itemPath)
             item.builder = this
             items.add(item)

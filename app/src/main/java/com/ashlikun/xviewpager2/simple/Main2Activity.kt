@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_main2.*
  */
 class Main2Activity : AppCompatActivity() {
     val adapter: FragmentPagerAdapter by lazy {
-        FragmentPagerAdapter.Builder.create(this)
+        create(this)
                 .addItem("/Fragment/test").setId("1").ok()
                 .addItem("/Fragment/test").setId("2").ok()
                 .addItem("/Fragment/test").setId("3").ok()
@@ -31,6 +31,7 @@ class Main2Activity : AppCompatActivity() {
                 .setCache(true)
                 .build()
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
