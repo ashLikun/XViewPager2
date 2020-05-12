@@ -139,9 +139,9 @@ dependencies {
                  fragmentLayout.setAdapter(adapter)
                  fragmentLayout.setRefreshLayout(swipeRefresh)
 
-            TabLayoutMediator(tabLayout,fragmentLayout,adapter).attach
+            XTabLayoutMediator(tabLayout,fragmentLayout,adapter).attach
 
-            TabLayoutMediator:与TabLayout一起使用
+            XTabLayoutMediator:与TabLayout一起使用
 ```
 ### 混肴
 ####
