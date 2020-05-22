@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -17,9 +15,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.ashlikun.xviewpager2.fragment.FragmentPagerItem
 import com.ashlikun.xviewpager2.listener.OnItemClickListener
 import com.ashlikun.xviewpager2.transform.MarginMultiPageTransformer
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_test1.*
-import kotlinx.android.synthetic.main.fragment_test1.convenientBanner
 
 /**
  * 作者　　: 李坤
@@ -81,7 +77,7 @@ class TestFragment : Fragment() {
         recycleView.recyclerView.layoutManager = LinearLayoutManager(context)
         recycleView.recyclerView.adapter = MyListAdapter(context!!)
 
-        convenientBanner.setAdapter(BannerAdapter1(context!!, BannerAdapter.RESURL2))
+        convenientBanner.setAdapter(BannerAdapter1(context!!, BannerAdapter.RESURL3))
 
         convenientBanner.setPageTransformer(MarginMultiPageTransformer(50, 150, 150, 0.9f))
         convenientBanner.setOnItemClickListener(object : OnItemClickListener<String> {

@@ -5,14 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
-import android.util.*
+import android.util.AttributeSet
+import android.util.SparseBooleanArray
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.annotation.Px
-import androidx.core.util.set
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +24,7 @@ import com.ashlikun.xviewpager2.R
 import com.ashlikun.xviewpager2.ViewPagerUtils
 import com.ashlikun.xviewpager2.transform.BasePageTransformer
 import com.ashlikun.xviewpager2.transform.CompositePageTransformer
-import java.util.ArrayList
+import java.util.*
 import kotlin.math.abs
 
 /**
@@ -299,7 +299,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
         isOtherXViewPager?.forEach { pp ->
             if (!isEnabled) {
-                if (pp.isEnabled) {
+                if (pp.isUserInputEnabled) {
                     pp.isUserInputEnabled = false
                     isOtherXViewPagerSet!!.put(pp.hashCode(), true)
                 }

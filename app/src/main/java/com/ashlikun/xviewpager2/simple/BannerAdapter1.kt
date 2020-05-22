@@ -28,6 +28,8 @@ object BannerAdapter {
             "http://uploadfile.bizhizu.cn/up/03/50/95/0350955b21a20b6deceea4914b1cfeeb.jpg.source.jpg",
             "http://pic1.win4000.com/wallpaper/7/5860842b353da.jpg",
             "http://pic1.win4000.com/wallpaper/b/566a37b05aac3.jpg")
+    val RESURL3 = listOf(
+            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4135477902,3355939884&fm=26&gp=0.jpg")
 }
 
 
