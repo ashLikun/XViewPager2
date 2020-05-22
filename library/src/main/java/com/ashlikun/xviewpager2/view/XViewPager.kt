@@ -5,13 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
-import android.util.AttributeSet
-import android.util.Log
+import android.util.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.annotation.Px
+import androidx.core.util.set
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,7 @@ import com.ashlikun.xviewpager2.R
 import com.ashlikun.xviewpager2.ViewPagerUtils
 import com.ashlikun.xviewpager2.transform.BasePageTransformer
 import com.ashlikun.xviewpager2.transform.CompositePageTransformer
+import java.util.ArrayList
 import kotlin.math.abs
 
 /**
@@ -45,6 +47,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var startY = 0f
     private var refreshLayout: View? = null
     private var isRefreshLayoutSet = false
+
+    //其他的XViewPager 是否被设置过
+    private var isOtherXViewPagerSet: SparseBooleanArray? = null
+    private var isOtherXViewPager: ArrayList<XViewPager>? = null
     private var touchSlop = 0
 
     //缩放比例
@@ -206,6 +212,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 // 记录手指按下的位置
                 startY = ev.y
                 startX = ev.x
+                initOtherXViewPager()
                 requestDisallowInterceptTouchEventmy(true)
             }
             MotionEvent.ACTION_MOVE -> {
@@ -218,17 +225,28 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 if (isHorizontal()) {
                     if (distanceX > touchSlop && distanceX * 0.5f > distanceY) {
                         val or = (startX - endX).toInt()
-                        requestDisallowInterceptTouchEventmy(canScrollHorizontally(or))
+                        val canScrollHorizontally = canScrollHorizontally(or)
+                        if (!canScrollHorizontally) {
+                            //设置父控件可以滚动
+                            setViewPagerUserInputEnabled(true)
+                        }
+                        requestDisallowInterceptTouchEventmy(canScrollHorizontally)
+
                         setRefreshEnable(false)
                     } else if (distanceY > touchSlop && distanceX < distanceY) {
                         //垂直滑动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
+                        //设置父控件不可以滚动
+                        setViewPagerUserInputEnabled(false)
                     }
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (isHorizontal()) {
                 requestDisallowInterceptTouchEventmy(false)
                 setRefreshEnable(true)
+                //设置父控件可以滚动
+                setViewPagerUserInputEnabled(true)
+                cleanOtherXViewPager()
             }
         }
         return super.onInterceptTouchEvent(ev)
@@ -258,6 +276,37 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
+    private fun cleanOtherXViewPager() {
+        isOtherXViewPager?.clear()
+    }
+
+    private fun initOtherXViewPager() {
+        var pp: ViewParent? = parent
+        while (pp != null) {
+            if (pp is XViewPager) {
+                isOtherXViewPager = arrayListOf()
+                isOtherXViewPager!!.add(pp)
+            }
+            pp = pp?.parent
+        }
+    }
+
+    private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
+        isOtherXViewPager?.forEach { pp ->
+            isOtherXViewPagerSet = SparseBooleanArray()
+            if (!isEnabled) {
+                if (pp.isEnabled) {
+                    pp.isUserInputEnabled = false
+                    isOtherXViewPagerSet!!.put(pp.hashCode(), true)
+                }
+            } else {
+                if (isOtherXViewPagerSet!!.get(pp.hashCode())) {
+                    pp.isUserInputEnabled = true
+                    isOtherXViewPagerSet!!.put(pp.hashCode(), false)
+                }
+            }
+        }
+    }
 
     override fun dispatchDraw(canvas: Canvas) {
         if (radiusLeftTop != -1f || radiusRightTop != -1f || radiusRightBottom != -1f || radiusLeftBottom != -1f) {
