@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * @author　　: 李坤
@@ -29,6 +30,7 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
      */
     private var moveSize = 0f
     private var firstViewX = 0
+    private var firstViewY = 0
     private var currentSelect = 0
     var mPaint: Paint? = null
     override fun initView(context: Context?, attrs: AttributeSet?) {
@@ -52,6 +54,7 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
             return
         }
         firstViewX = pointViews[0].x.toInt()
+        firstViewY = pointViews[0].y.toInt()
         moveSize = if (pointViews.size == 1) {
             0f
         } else {
@@ -114,7 +117,7 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
         super.dispatchDraw(canvas)
         if (childCount > 0) {
             canvas.save()
-            canvas.translate(moveDistance, 0f)
+            canvas.translate(moveDistance, firstViewY - abs(selectDraw!!.intrinsicHeight - noSelectDraw!!.intrinsicHeight) / 2f)
             selectDraw!!.draw(canvas)
             canvas.restore()
         }
