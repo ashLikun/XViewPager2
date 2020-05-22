@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -43,6 +44,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private var startX = 0f
     private var startY = 0f
     private var refreshLayout: View? = null
+    private var isRefreshLayoutSet = false
     private var touchSlop = 0
 
     //缩放比例
@@ -133,6 +135,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
      */
     var scrollDuration = -1
 
+
     init {
         //添加ViewPager2
         addView(viewPager)
@@ -197,40 +200,64 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         return viewPager!!.canScrollHorizontally(direction)
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 // 记录手指按下的位置
                 startY = ev.y
                 startX = ev.x
+                requestDisallowInterceptTouchEventmy(true)
             }
             MotionEvent.ACTION_MOVE -> {
                 // 获取当前手指位置
                 val endY = ev.y
                 val endX = ev.x
-                val distanceX = Math.abs(endX - startX)
-                val distanceY = Math.abs(endY - startY)
+                val distanceX = abs(endX - startX)
+                val distanceY = abs(endY - startY)
                 //这里只处理水平的
                 if (isHorizontal()) {
-                    if (distanceX > touchSlop && distanceX > distanceY) {
-                        if (parent != null) {
-                            parent.requestDisallowInterceptTouchEvent(true)
-                        }
-                        refreshLayout?.isEnabled = false
+                    if (distanceX > touchSlop && distanceX * 0.5f > distanceY) {
+                        val or = (startX - endX).toInt()
+                        requestDisallowInterceptTouchEventmy(canScrollHorizontally(or))
+                        setRefreshEnable(false)
+                    } else if (distanceY > touchSlop && distanceX < distanceY) {
+                        //垂直滑动，主动释放
+                        requestDisallowInterceptTouchEventmy(false)
                     }
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (isHorizontal()) {
-                if (parent != null) {
-                    parent.requestDisallowInterceptTouchEvent(false)
-                }
-                refreshLayout?.isEnabled = true
-            }
-            else -> {
+                requestDisallowInterceptTouchEventmy(false)
+                setRefreshEnable(true)
             }
         }
-        return super.dispatchTouchEvent(ev)
+        return super.onInterceptTouchEvent(ev)
     }
+
+    private fun requestDisallowInterceptTouchEventmy(disallowIntercept: Boolean) {
+        if (parent != null) {
+            parent.requestDisallowInterceptTouchEvent(disallowIntercept)
+        }
+
+    }
+
+
+    private fun setRefreshEnable(isEnabled: Boolean) {
+        if (refreshLayout != null) {
+            if (!isEnabled) {
+                if (refreshLayout!!.isEnabled) {
+                    refreshLayout?.isEnabled = isEnabled
+                    isRefreshLayoutSet = true
+                }
+            } else {
+                if (isRefreshLayoutSet) {
+                    refreshLayout?.isEnabled = true
+                    isRefreshLayoutSet = false
+                }
+            }
+        }
+    }
+
 
     override fun dispatchDraw(canvas: Canvas) {
         if (radiusLeftTop != -1f || radiusRightTop != -1f || radiusRightBottom != -1f || radiusLeftBottom != -1f) {
@@ -322,7 +349,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     @JvmOverloads
     open fun setCurrentItem(item: Int, smoothScroll: Boolean = true) {
         if (scrollDuration > 0 && smoothScroll) {
-
             if (getAdapter()?.itemCount ?: 0 <= 0) {
                 return
             }
@@ -330,30 +356,34 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             if (item == getCurrentItem()) {
                 return
             }
-            var previousItem = getCurrentItem()
 
+            try {
+                var previousItem = getCurrentItem()
+                //源码反射
+                ViewPagerUtils.setField(viewPager, "mCurrentItem", item)
+                var isIdle: Boolean
+                var mScrollEventAdapter = ViewPagerUtils.getField(viewPager, "mScrollEventAdapter")
+                isIdle = ViewPagerUtils.getMethod(mScrollEventAdapter, "isIdle") as Boolean? ?: true
+                ViewPagerUtils.getField(viewPager, "mAccessibilityProvider")?.run {
+                    ViewPagerUtils.getMethod(this, "onSetNewCurrentItem")
+                }
+                if (!isIdle) {
+                    previousItem = (ViewPagerUtils.getMethod(mScrollEventAdapter, "getRelativeScrollPosition") as Double?)?.toInt()
+                            ?: previousItem
+                }
+                ViewPagerUtils.getMethod(mScrollEventAdapter, "notifyProgrammaticScroll", item, smoothScroll)
+                //源码反射结束
 
-            //源码反射
-            ViewPagerUtils.setField(viewPager, "mCurrentItem", item)
-            var isIdle: Boolean
-            var mScrollEventAdapter = ViewPagerUtils.getField(viewPager, "mScrollEventAdapter")
-            isIdle = ViewPagerUtils.getMethod(mScrollEventAdapter, "isIdle") as Boolean? ?: true
-            ViewPagerUtils.getField(viewPager, "mAccessibilityProvider")?.run {
-                ViewPagerUtils.getMethod(this, "onSetNewCurrentItem")
-            }
-            if (!isIdle) {
-                previousItem = ViewPagerUtils.getMethod(mScrollEventAdapter, "getRelativeScrollPosition") as Int?
-                        ?: previousItem
-            }
-            ViewPagerUtils.getMethod(mScrollEventAdapter, "notifyProgrammaticScroll", item, smoothScroll)
-            //源码反射结束
-
-            // 为了平滑滚动，跳远到附近的项目。
-            if (abs(item - previousItem) > 3) {
-                recyclerView.scrollToPosition(if (item > previousItem) item - 3 else item + 3)
-                recyclerView.post(SmoothScrollToPosition(item, scrollDuration, recyclerView))
-            } else {
-                SmoothScrollToPosition(item, scrollDuration, recyclerView).run()
+                // 为了平滑滚动，跳远到附近的项目。
+                if (abs(item - previousItem) > 3) {
+                    recyclerView.scrollToPosition(if (item > previousItem) item - 3 else item + 3)
+                    recyclerView.post(SmoothScrollToPosition(item, scrollDuration, recyclerView))
+                } else {
+                    SmoothScrollToPosition(item, scrollDuration, recyclerView).run()
+                }
+            } catch (e: Exception) {
+                //使用默认的
+                viewPager.setCurrentItem(item, smoothScroll)
             }
         } else {
             //使用默认的

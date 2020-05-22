@@ -32,7 +32,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    app:banner_isAutoTurning="false"
+                    app:banner_isAutoTurning="true"
                     app:banner_isOneDataOffLoopAndTurning="true"
                     app:banner_turningTime="2500"
                     app:ind_no_select="@drawable/my_banner_circle_default"

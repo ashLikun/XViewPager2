@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_main2.*
 class Main2Activity : AppCompatActivity() {
     val adapter: FragmentPagerAdapter by lazy {
         create(this)
-                .addItem("/Fragment/test").setId("1").ok()
+                .addItem("/Fragment/test2").setId("1").ok()
                 .addItem("/Fragment/test").setId("2").ok()
                 .addItem("/Fragment/test").setId("3").ok()
                 .addItem("/Fragment/test").setId("4").ok()
@@ -36,40 +36,41 @@ class Main2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
         FragmentUtils.removeAll(supportFragmentManager)
-        swipeRefresh.setOnRefreshListener {
-            Handler().postDelayed({
-                swipeRefresh.isRefreshing = false
-            }, 1000)
-        }
+//        swipeRefresh.setOnRefreshListener {
+//            Handler().postDelayed({
+//                swipeRefresh.isRefreshing = false
+//            }, 1000)
+//        }
+//        fragmentLayout.setRefreshLayout(swipeRefresh)
         fragmentLayout.setOffscreenPageLimit(2)
         fragmentLayout.setAdapter(adapter)
     }
 
     fun onClick1(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 0
+        fragmentLayout.setCurrentItem(0)
     }
 
     fun onClick2(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 1
+        fragmentLayout.setCurrentItem(1)
     }
 
     fun onClick3(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 2
+        fragmentLayout.setCurrentItem(2)
     }
 
     fun onClick4(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 3
+        fragmentLayout.setCurrentItem(3)
     }
 
     fun onClick5(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 4
+        fragmentLayout.setCurrentItem(4)
     }
 
     fun onClick6(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 5
+        fragmentLayout.setCurrentItem(5)
     }
 
     fun onClick7(view: View?) {
-        fragmentLayout.viewPager!!.currentItem = 6
+        fragmentLayout.setCurrentItem(6)
     }
 }

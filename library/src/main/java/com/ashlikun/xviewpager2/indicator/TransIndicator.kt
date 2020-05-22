@@ -57,7 +57,7 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
         } else {
             pointViews[1].x - firstViewX
         }
-        moveDistance = firstViewX - Math.abs(selectDraw!!.intrinsicWidth - noSelectDraw!!.intrinsicWidth).toFloat()
+        moveDistance = firstViewX - abs(selectDraw!!.intrinsicWidth - noSelectDraw!!.intrinsicWidth).toFloat() + (currentSelect * moveSize)
     }
 
     /**
@@ -102,6 +102,7 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
 
     override fun onPointSelected(selectIndex: Int) {
         currentSelect = selectIndex
+        invalidate()
     }
 
     /**
@@ -111,9 +112,11 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
      */
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-        canvas.save()
-        canvas.translate(moveDistance, 0f)
-        selectDraw!!.draw(canvas)
-        canvas.restore()
+        if (childCount > 0) {
+            canvas.save()
+            canvas.translate(moveDistance, 0f)
+            selectDraw!!.draw(canvas)
+            canvas.restore()
+        }
     }
 }

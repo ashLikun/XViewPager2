@@ -63,7 +63,7 @@ open class BannerViewPager
 
     init {
         setOffscreenPageLimit(1)
-        registerOnPageChangeCallback(ControlOnPageChangeCallback(this))
+        super.registerOnPageChangeCallback(ControlOnPageChangeCallback(this))
         val a = context.obtainStyledAttributes(attrs, R.styleable.BannerViewPager)
         canLoop = a.getBoolean(R.styleable.BannerViewPager_banner_canLoop, canLoop)
         isOneDataOffLoopAndTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isOneDataOffLoopAndTurning, isOneDataOffLoopAndTurning)
@@ -220,12 +220,23 @@ open class BannerViewPager
         adapter.setCanLoop(canLoop)
         adapter.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
         super.setAdapter(adapter)
-        setCurrentItem(getPagerAdapter()?.getFristPosition() ?: 0, false)
+        setCurrentItem(0, false)
         if (isTurning) {
             startTurning()
         }
     }
 
+
+    override fun setCurrentItem(item: Int, smoothScroll: Boolean) {
+        super.setCurrentItem(getPagerAdapter()?.getRealFanPosition(item) ?: item, smoothScroll)
+    }
+
+    /**
+     * 转换成真实的
+     */
+    fun setCurrentItemReal(item: Int, smoothScroll: Boolean = true) {
+        super.setCurrentItem(item, smoothScroll)
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -304,7 +315,7 @@ open class BannerViewPager
             val bannerViewPager = reference.get()
             if (bannerViewPager != null && bannerViewPager.isTurning) {
                 var page = bannerViewPager.getCurrentItem() + 1
-                bannerViewPager.setCurrentItem(page)
+                bannerViewPager.setCurrentItemReal(page)
                 //不循环的时候 如果是最后一个就判断是否继续
                 if (!bannerViewPager.isCanLoop()) {
                     if (page >= bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT - 1) {

@@ -1,11 +1,7 @@
 package com.ashlikun.xviewpager2.listener
 
 import android.util.Log
-import androidx.annotation.Px
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import androidx.viewpager2.widget.ViewPager2.ScrollState
 import com.ashlikun.xviewpager2.adapter.BasePageAdapter
 import com.ashlikun.xviewpager2.view.BannerViewPager
 
@@ -21,13 +17,14 @@ internal class ControlOnPageChangeCallback(var bannerViewPager: BannerViewPager)
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         super.onPageScrolled(position, positionOffset, positionOffsetPixels)
         if (positionOffset == 0f && bannerViewPager.isCanLoop()) {
-            var position = bannerViewPager.getCurrentItem()
             if (position < BasePageAdapter.MULTIPLE_COUNT) {
-                //最后一个
-                bannerViewPager.setCurrentItem(bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT - 1, false)
+                //后面的
+                val pp = BasePageAdapter.MULTIPLE_COUNT - position - 1
+                bannerViewPager.setCurrentItemReal(bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT - 1 - pp, false)
             } else if (position >= bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT) {
-                //第一个
-                bannerViewPager.setCurrentItem(BasePageAdapter.MULTIPLE_COUNT, false)
+                //前面的
+                val pp = position - (bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT)
+                bannerViewPager.setCurrentItemReal(BasePageAdapter.MULTIPLE_COUNT + pp, false)
             }
         }
     }

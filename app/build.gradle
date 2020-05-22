@@ -59,6 +59,7 @@ dependencies {
     implementation "jp.wasabeef:glide-transformations:3.0.1"
     implementation 'com.github.ashLikun:GlideUtils:1.0.0'
     implementation 'com.github.ashLikun:CommonAdapter:3.0.3'
+    implementation 'com.github.ashLikun:XRecycleView:2.1.4'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

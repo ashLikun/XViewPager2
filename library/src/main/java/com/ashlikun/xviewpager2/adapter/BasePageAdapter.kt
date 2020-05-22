@@ -20,7 +20,7 @@ import com.ashlikun.xviewpager2.listener.OnItemClickListener
  */
 open abstract class BasePageAdapter<T>(var context: Context, data: List<T>? = null) : RecyclerView.Adapter<MyViewHolder>() {
     companion object {
-        //数据前后各加多少个假数据(内部会*2)，如果循环的时候
+        //数据前后各加多少个假数据(前后加上2)，如果循环的时候
         const val MULTIPLE_COUNT = 2
     }
 
@@ -37,6 +37,9 @@ open abstract class BasePageAdapter<T>(var context: Context, data: List<T>? = nu
     private fun isCanLoop() = canLoop && (getRealCount() > if (isOneDataOffLoopAndTurning) 1 else 0)
 
     override fun getItemCount(): Int {
+        if (mDatas == null) {
+            return 0
+        }
         return if (isCanLoop()) getRealCount() + MULTIPLE_COUNT * 2 else getRealCount()
     }
 
@@ -44,14 +47,16 @@ open abstract class BasePageAdapter<T>(var context: Context, data: List<T>? = nu
         return mDatas?.size ?: 0
     }
 
-    fun getFristPosition(): Int {
-        return if (isCanLoop()) MULTIPLE_COUNT else 0
-    }
 
     fun getRealPosition(position: Int) = if (isCanLoop()) ViewPagerUtils.getRealPosition(position, itemCount) else position
 
+    /**
+     * 反转换
+     */
+    fun getRealFanPosition(position: Int) = if (isCanLoop()) position + MULTIPLE_COUNT else position
+
     fun getItemData(position: Int): T? {
-        if (position >= 0 && position < getRealCount()) {
+        if (position >= 0 && position < getRealCount() && mDatas != null) {
             return mDatas!![position]
         }
         return null

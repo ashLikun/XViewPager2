@@ -2,10 +2,12 @@ package com.ashlikun.xviewpager2.simple
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.ashlikun.xviewpager2.ConvenientBanner
 import com.ashlikun.xviewpager2.indicator.TransIndicator
 import com.ashlikun.xviewpager2.listener.OnItemClickListener
@@ -27,6 +29,13 @@ class MainActivity : AppCompatActivity() {
         convenientBanner.setOnItemClickListener(object : OnItemClickListener<String> {
             override fun onItemClick(data: String, position: Int) {
                 Toast.makeText(this@MainActivity, "" + position, Toast.LENGTH_LONG).show()
+            }
+        })
+        convenientBanner.setCurrentItem(1, false)
+        convenientBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.e("MainActivity", "  $position")
             }
         })
     }

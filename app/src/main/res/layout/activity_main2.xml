@@ -7,21 +7,13 @@
     android:orientation="vertical"
     tools:context="com.ashlikun.xviewpager2.simple.Main2Activity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
+
+    <com.ashlikun.xviewpager2.view.XViewPager
+        android:id="@+id/fragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <com.ashlikun.xviewpager2.view.XViewPager
-            android:id="@+id/fragmentLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            app:xvp_radius="10dp"
-            app:xvp_ratio="1"></com.ashlikun.xviewpager2.view.XViewPager>
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_weight="1"
+        android:orientation="horizontal"></com.ashlikun.xviewpager2.view.XViewPager>
 
 
     <LinearLayout

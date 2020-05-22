@@ -14,12 +14,14 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ashlikun.xviewpager2.fragment.FragmentPagerAdapter
 import com.ashlikun.xviewpager2.fragment.FragmentPagerItem
 import com.ashlikun.xviewpager2.listener.OnItemClickListener
 import com.ashlikun.xviewpager2.transform.MarginMultiPageTransformer
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_test1.*
-import kotlinx.android.synthetic.main.fragment_test1.convenientBanner
+import kotlinx.android.synthetic.main.activity_main2.*
+import kotlinx.android.synthetic.main.fragment_test2.*
+import kotlinx.android.synthetic.main.fragment_test2.fragmentLayout
 
 /**
  * 作者　　: 李坤
@@ -29,12 +31,24 @@ import kotlinx.android.synthetic.main.fragment_test1.convenientBanner
  *
  * 功能介绍：
  */
-@Route(path = "/Fragment/test")
-class TestFragment : Fragment() {
+@Route(path = "/Fragment/test2")
+class Test2Fragment : Fragment() {
     var id: String? = null
     var rootView: View? = null
     var isCache = false
-    var count = 0
+    val adapter: FragmentPagerAdapter by lazy {
+        FragmentPagerAdapter.Builder.create(childFragmentManager, lifecycle)
+                .addItem("/Fragment/test").setId("111").ok()
+                .addItem("/Fragment/test").setId("222").ok()
+                .addItem("/Fragment/test").setId("333").ok()
+                .addItem("/Fragment/test").setId("444").ok()
+                .addItem("/Fragment/test").setId("555").ok()
+                .addItem("/Fragment/test").setId("666").ok()
+                .addItem("/Fragment/test").setId("777").ok()
+                .setCache(true)
+                .build()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         id = arguments!!.getString(FragmentPagerItem.ID)
@@ -43,18 +57,11 @@ class TestFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("onCreate", "id == $id")
-        lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                Log.e("aaaaaaaa onDestroy", "id == $id")
-            }
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (rootView == null) {
-            rootView = inflater.inflate(R.layout.fragment_test1, null)
+            rootView = inflater.inflate(R.layout.fragment_test2, null)
         } else {
             val parent = rootView!!.parent as ViewGroup
             parent?.removeView(rootView)
@@ -66,28 +73,8 @@ class TestFragment : Fragment() {
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(rootView, savedInstanceState)
-        textView.text = "id == $id"
-        Log.e("onViewCreated", "id == $id")
-//        textView.text = "我是第" + id + "个"
-//        when (id) {
-//            "1" -> bagView!!.setBackgroundColor(-0x10000)
-//            "2" -> bagView!!.setBackgroundColor(-0xff0100)
-//            "3" -> bagView!!.setBackgroundColor(-0xffff01)
-//            "4" -> bagView!!.setBackgroundColor(-0xf001)
-//            "5" -> bagView!!.setBackgroundColor(-0x99aa78)
-//            "6" -> bagView!!.setBackgroundColor(-0x8877de)
-//            "7" -> bagView!!.setBackgroundColor(-0xccbb67)
-//        }
-        recycleView.recyclerView.layoutManager = LinearLayoutManager(context)
-        recycleView.recyclerView.adapter = MyListAdapter(context!!)
-
-        convenientBanner.setAdapter(BannerAdapter1(context!!, BannerAdapter.RESURL2))
-
-        convenientBanner.setPageTransformer(MarginMultiPageTransformer(50, 150, 150, 0.9f))
-        convenientBanner.setOnItemClickListener(object : OnItemClickListener<String> {
-            override fun onItemClick(data: String, position: Int) {
-            }
-        })
+        fragmentLayout.setOffscreenPageLimit(2)
+        fragmentLayout.setAdapter(adapter)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -134,5 +121,34 @@ class TestFragment : Fragment() {
         super.setUserVisibleHint(isVisibleToUser)
         id = arguments!!.getString(FragmentPagerItem.ID)
         Log.e("setUserVisibleHint", "id == $id   isVisibleToUser = $isVisibleToUser")
+    }
+
+
+    fun onClick1(view: View?) {
+        fragmentLayout.setCurrentItem(0)
+    }
+
+    fun onClick2(view: View?) {
+        fragmentLayout.setCurrentItem(1)
+    }
+
+    fun onClick3(view: View?) {
+        fragmentLayout.setCurrentItem(2)
+    }
+
+    fun onClick4(view: View?) {
+        fragmentLayout.setCurrentItem(3)
+    }
+
+    fun onClick5(view: View?) {
+        fragmentLayout.setCurrentItem(4)
+    }
+
+    fun onClick6(view: View?) {
+        fragmentLayout.setCurrentItem(5)
+    }
+
+    fun onClick7(view: View?) {
+        fragmentLayout.setCurrentItem(6)
     }
 }

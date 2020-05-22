@@ -31,7 +31,7 @@ object BannerAdapter {
 }
 
 
-class BannerAdapter1 @JvmOverloads constructor(context: Context, datas: List<String> = BannerAdapter.RESURL) : BasePageAdapter<String>(context, datas) {
+class BannerAdapter1 @JvmOverloads constructor(context: Context, datas: List<String>? = BannerAdapter.RESURL) : BasePageAdapter<String>(context, datas) {
     override fun convert(holder: MyViewHolder, data: String) {
         val imageView = holder.itemView as ImageView
         GlideUtils.show(imageView, data)
