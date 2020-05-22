@@ -256,7 +256,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         if (parent != null) {
             parent.requestDisallowInterceptTouchEvent(disallowIntercept)
         }
-
     }
 
 
