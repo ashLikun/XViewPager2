@@ -212,8 +212,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 // 记录手指按下的位置
                 startY = ev.y
                 startX = ev.x
-                initOtherXViewPager()
                 requestDisallowInterceptTouchEventmy(true)
+                initOtherXViewPager()
             }
             MotionEvent.ACTION_MOVE -> {
                 // 获取当前手指位置
@@ -223,7 +223,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 val distanceY = abs(endY - startY)
                 //这里只处理水平的
                 if (isHorizontal()) {
-                    if (distanceX > touchSlop && distanceX * 0.5f > distanceY) {
+                    if (distanceX > touchSlop && distanceX > distanceY) {
                         val or = (startX - endX).toInt()
                         val canScrollHorizontally = canScrollHorizontally(or)
                         if (!canScrollHorizontally) {
