@@ -282,9 +282,15 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private fun initOtherXViewPager() {
         var pp: ViewParent? = parent
+
         while (pp != null) {
             if (pp is XViewPager) {
-                isOtherXViewPager = arrayListOf()
+                if (isOtherXViewPager == null) {
+                    isOtherXViewPager = arrayListOf()
+                }
+                if (isOtherXViewPagerSet == null) {
+                    isOtherXViewPagerSet = SparseBooleanArray()
+                }
                 isOtherXViewPager!!.add(pp)
             }
             pp = pp?.parent
@@ -293,7 +299,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
         isOtherXViewPager?.forEach { pp ->
-            isOtherXViewPagerSet = SparseBooleanArray()
             if (!isEnabled) {
                 if (pp.isEnabled) {
                     pp.isUserInputEnabled = false
