@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.annotation.Px
@@ -224,6 +225,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 // 记录手指按下的位置
                 startY = ev.y
                 startX = ev.x
+                requestDisallowInterceptTouchEventmy(true)
             }
             MotionEvent.ACTION_MOVE -> {
                 // 获取当前手指位置
@@ -304,6 +306,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
+        Log.e("setViewPagerUserInput", "${isOtherXViewPager.size}")
         isOtherXViewPager.forEach {
             if (!isEnabled) {
                 if (it.key.isUserInputEnabled) {
