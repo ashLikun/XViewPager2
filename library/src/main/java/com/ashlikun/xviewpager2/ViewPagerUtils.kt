@@ -120,6 +120,7 @@ object ViewPagerUtils {
                 }
             } catch (e: NoSuchFieldException) {
                 e.printStackTrace()
+                return null
             }
             claxx = claxx.superclass
         }
@@ -141,6 +142,7 @@ object ViewPagerUtils {
             }
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
+            return null
         }
         return null
     }
@@ -162,6 +164,7 @@ object ViewPagerUtils {
             }
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
+            return null
         }
         return null
     }
@@ -197,12 +200,13 @@ object ViewPagerUtils {
         }
         while (claxx != null && claxx != Any::class.java) {
             try {
-                val f = claxx.getDeclaredMethod(methodName)
+                val f = claxx.declaredMethods.find { it.name == methodName }
                 if (f != null) {
                     return f
                 }
             } catch (e: NoSuchMethodException) {
                 e.printStackTrace()
+                return null
             }
             claxx = claxx.superclass
         }
@@ -223,10 +227,10 @@ object ViewPagerUtils {
             val method = getAllDeclaredMethod(obj!!.javaClass, methodName)
             if (method != null) {
                 method.isAccessible = true
-                if (args.isNotEmpty()) {
-                    return method.invoke(obj, args)
+                return if (args.isNotEmpty()) {
+                    method.invoke(obj, *args)
                 } else {
-                    return method.invoke(obj)
+                    method.invoke(obj)
                 }
             }
         } catch (e: InvocationTargetException) {

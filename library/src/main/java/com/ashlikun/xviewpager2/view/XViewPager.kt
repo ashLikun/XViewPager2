@@ -6,11 +6,8 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.SparseBooleanArray
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewConfiguration
-import android.view.ViewParent
+import android.util.Log
+import android.view.*
 import android.widget.FrameLayout
 import androidx.annotation.Px
 import androidx.core.view.ViewCompat
@@ -24,7 +21,6 @@ import com.ashlikun.xviewpager2.R
 import com.ashlikun.xviewpager2.ViewPagerUtils
 import com.ashlikun.xviewpager2.transform.BasePageTransformer
 import com.ashlikun.xviewpager2.transform.CompositePageTransformer
-import java.util.*
 import kotlin.math.abs
 
 /**
@@ -41,16 +37,17 @@ import kotlin.math.abs
 open class XViewPager
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        FrameLayout(context, attrs, defStyleAttr) {
+        FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
 
     private var startX = 0f
     private var startY = 0f
     private var refreshLayout: View? = null
     private var isRefreshLayoutSet = false
 
-    //其他的XViewPager 是否被设置过
-    private var isOtherXViewPagerSet: SparseBooleanArray? = null
-    private var isOtherXViewPager: ArrayList<XViewPager>? = null
+    //保存父类的XViewPager,是否被设置过
+    private val isOtherXViewPager: HashMap<XViewPager, Boolean> by lazy {
+        hashMapOf<XViewPager, Boolean>()
+    }
     private var touchSlop = 0
 
     //缩放比例
@@ -177,6 +174,22 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         a.recycle()
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        viewTreeObserver.removeOnGlobalLayoutListener(this)
+        viewTreeObserver.addOnGlobalLayoutListener(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        viewTreeObserver.removeOnGlobalLayoutListener(this)
+        cleanOtherXViewPager()
+    }
+
+    override fun onGlobalLayout() {
+        initOtherXViewPager()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var widthMeasureSpec = widthMeasureSpec
         var heightMeasureSpec = heightMeasureSpec
@@ -212,8 +225,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 // 记录手指按下的位置
                 startY = ev.y
                 startX = ev.x
-                requestDisallowInterceptTouchEventmy(true)
-                initOtherXViewPager()
             }
             MotionEvent.ACTION_MOVE -> {
                 // 获取当前手指位置
@@ -231,7 +242,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                             setViewPagerUserInputEnabled(true)
                         }
                         requestDisallowInterceptTouchEventmy(canScrollHorizontally)
-
                         setRefreshEnable(false)
                     } else if (distanceY > touchSlop && distanceX < distanceY) {
                         //垂直滑动，主动释放
@@ -246,7 +256,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 setRefreshEnable(true)
                 //设置父控件可以滚动
                 setViewPagerUserInputEnabled(true)
-                cleanOtherXViewPager()
             }
         }
         return super.onInterceptTouchEvent(ev)
@@ -276,37 +285,36 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     private fun cleanOtherXViewPager() {
-        isOtherXViewPager?.clear()
+        //设置父控件可以滚动
+        setViewPagerUserInputEnabled(true)
+        isOtherXViewPager.clear()
     }
 
+    /**
+     * 保存父类的XViewPager
+     */
     private fun initOtherXViewPager() {
         var pp: ViewParent? = parent
-
         while (pp != null) {
             if (pp is XViewPager) {
-                if (isOtherXViewPager == null) {
-                    isOtherXViewPager = arrayListOf()
-                }
-                if (isOtherXViewPagerSet == null) {
-                    isOtherXViewPagerSet = SparseBooleanArray()
-                }
-                isOtherXViewPager!!.add(pp)
+                isOtherXViewPager.put(pp, false)
             }
             pp = pp?.parent
         }
+        Log.e("initOtherXViewPager", isOtherXViewPager.size.toString())
     }
 
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
-        isOtherXViewPager?.forEach { pp ->
+        isOtherXViewPager.forEach {
             if (!isEnabled) {
-                if (pp.isUserInputEnabled) {
-                    pp.isUserInputEnabled = false
-                    isOtherXViewPagerSet!!.put(pp.hashCode(), true)
+                if (it.key.isUserInputEnabled) {
+                    it.key.isUserInputEnabled = false
+                    isOtherXViewPager.set(it.key, true)
                 }
             } else {
-                if (isOtherXViewPagerSet!!.get(pp.hashCode())) {
-                    pp.isUserInputEnabled = true
-                    isOtherXViewPagerSet!!.put(pp.hashCode(), false)
+                if (it.value) {
+                    it.key.isUserInputEnabled = true
+                    isOtherXViewPager.set(it.key, false)
                 }
             }
         }
@@ -435,6 +443,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                     SmoothScrollToPosition(item, scrollDuration, recyclerView).run()
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 //使用默认的
                 viewPager.setCurrentItem(item, smoothScroll)
             }
@@ -550,4 +559,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     open fun removeItemDecoration(decor: ItemDecoration) {
         viewPager.removeItemDecoration(decor)
     }
+
+
 }
