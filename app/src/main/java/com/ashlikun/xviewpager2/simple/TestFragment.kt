@@ -77,7 +77,7 @@ class TestFragment : Fragment() {
         recycleView.recyclerView.layoutManager = LinearLayoutManager(context)
         recycleView.recyclerView.adapter = MyListAdapter(context!!)
 
-        convenientBanner.setAdapter(BannerAdapter1(context!!, BannerAdapter.RESURL3))
+        convenientBanner.setAdapter(BannerAdapter1(context!!, if (id?.toInt() ?: 0 > 666) BannerAdapter.RESURL3 else BannerAdapter.RESURL2))
 
         convenientBanner.setPageTransformer(MarginMultiPageTransformer(50, 150, 150, 0.9f))
         convenientBanner.setOnItemClickListener(object : OnItemClickListener<String> {
