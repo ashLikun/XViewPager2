@@ -306,7 +306,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     }
 
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
-        Log.e("setViewPagerUserInput", "${isOtherXViewPager.size}")
         isOtherXViewPager.forEach {
             if (!isEnabled) {
                 if (it.key.isUserInputEnabled) {
