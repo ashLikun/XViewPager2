@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.annotation.Px
@@ -294,6 +293,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
      * 保存父类的XViewPager
      */
     private fun initOtherXViewPager() {
+        cleanOtherXViewPager()
         var pp: ViewParent? = parent
         while (pp != null) {
             if (pp is XViewPager) {
@@ -301,7 +301,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             }
             pp = pp?.parent
         }
-        Log.e("initOtherXViewPager", isOtherXViewPager.size.toString())
     }
 
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
@@ -309,12 +308,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
             if (!isEnabled) {
                 if (it.key.isUserInputEnabled) {
                     it.key.isUserInputEnabled = false
-                    isOtherXViewPager.set(it.key, true)
+                    isOtherXViewPager[it.key] = true
                 }
             } else {
                 if (it.value) {
                     it.key.isUserInputEnabled = true
-                    isOtherXViewPager.set(it.key, false)
+                    isOtherXViewPager[it.key] = false
                 }
             }
         }
@@ -432,7 +431,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                     previousItem = (ViewPagerUtils.getMethod(mScrollEventAdapter, "getRelativeScrollPosition") as Double?)?.toInt()
                             ?: previousItem
                 }
-                ViewPagerUtils.getMethod(mScrollEventAdapter, "notifyProgrammaticScroll", item, smoothScroll)
+                ViewPagerUtils.getMethod(mScrollEventAdapter, "notifyProgrammaticScroll", arrayOf(Int::class.java, Boolean::class.java), item, smoothScroll)
                 //源码反射结束
 
                 // 为了平滑滚动，跳远到附近的项目。

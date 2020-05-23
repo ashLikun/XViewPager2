@@ -193,14 +193,14 @@ object ViewPagerUtils {
     /**
      * 获取指定的方法
      */
-    fun getAllDeclaredMethod(claxx: Class<*>?, methodName: String): Method? {
+    fun getAllDeclaredMethod(claxx: Class<*>?, methodName: String, vararg parameterTypes: Class<*>): Method? {
         var claxx = claxx
         if (methodName == null || methodName.isEmpty()) {
             return null
         }
         while (claxx != null && claxx != Any::class.java) {
             try {
-                val f = claxx.declaredMethods.find { it.name == methodName }
+                val f = claxx.getDeclaredMethod(methodName, *parameterTypes)
                 if (f != null) {
                     return f
                 }
@@ -219,12 +219,13 @@ object ViewPagerUtils {
      * @param object     要反射的对象
      * @param methodName 要反射的方法名称
      */
-    fun getMethod(obj: Any?, methodName: String, vararg args: Any?): Any? {
+    fun getMethod(obj: Any?, methodName: String, parameterTypes: Array<Class<*>>? = null, vararg args: Any?): Any? {
         if (obj == null) {
             return null
         }
         try {
-            val method = getAllDeclaredMethod(obj!!.javaClass, methodName)
+            val pp = if (parameterTypes == null) arrayOf() else parameterTypes
+            val method = getAllDeclaredMethod(obj!!.javaClass, methodName, *pp)
             if (method != null) {
                 method.isAccessible = true
                 return if (args.isNotEmpty()) {
