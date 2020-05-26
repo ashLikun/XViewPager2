@@ -240,7 +240,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         val canScrollHorizontally = canScrollHorizontally(or)
                         if (!canScrollHorizontally) {
                             //设置父控件可以滚动
-                            setViewPagerUserInputEnabled(true)
+                            setViewPagerUserInputEnabled(true, isHorizontal())
                         }
                         requestDisallowInterceptTouchEventmy(canScrollHorizontally)
                         setRefreshEnable(false)
@@ -248,7 +248,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         //垂直滑动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
                         //设置父控件不可以滚动
-                        setViewPagerUserInputEnabled(false)
+                        setViewPagerUserInputEnabled(false, isHorizontal())
                     }
                 }
             }
@@ -256,7 +256,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 requestDisallowInterceptTouchEventmy(false)
                 setRefreshEnable(true)
                 //设置父控件可以滚动
-                setViewPagerUserInputEnabled(true)
+                setViewPagerUserInputEnabled(true, isHorizontal())
             }
         }
         return super.onInterceptTouchEvent(ev)
@@ -287,7 +287,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private fun cleanOtherXViewPager() {
         //设置父控件可以滚动
-        setViewPagerUserInputEnabled(true)
+        setViewPagerUserInputEnabled(true, isHorizontal())
         isOtherXViewPager.clear()
     }
 
@@ -305,17 +305,19 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    private fun setViewPagerUserInputEnabled(isEnabled: Boolean) {
+    private fun setViewPagerUserInputEnabled(isEnabled: Boolean, isHorizontal: Boolean) {
         isOtherXViewPager.forEach {
-            if (!isEnabled) {
-                if (it.key.isUserInputEnabled) {
-                    it.key.isUserInputEnabled = false
-                    isOtherXViewPager[it.key] = true
-                }
-            } else {
-                if (it.value) {
-                    it.key.isUserInputEnabled = true
-                    isOtherXViewPager[it.key] = false
+            if (it.key.isHorizontal() && isHorizontal) {
+                if (!isEnabled) {
+                    if (it.key.isUserInputEnabled) {
+                        it.key.isUserInputEnabled = false
+                        isOtherXViewPager[it.key] = true
+                    }
+                } else {
+                    if (it.value) {
+                        it.key.isUserInputEnabled = true
+                        isOtherXViewPager[it.key] = false
+                    }
                 }
             }
         }
