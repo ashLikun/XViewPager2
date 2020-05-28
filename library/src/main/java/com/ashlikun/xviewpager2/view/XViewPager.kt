@@ -244,7 +244,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         }
                         requestDisallowInterceptTouchEventmy(canScrollHorizontally)
                         setRefreshEnable(false)
-                    } else if (distanceY > touchSlop && distanceX < distanceY) {
+                    } else if (distanceY > touchSlop && distanceX * 0.8f <= distanceY) {
                         //垂直滑动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
                         //设置父控件不可以滚动
@@ -260,7 +260,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         }
                         requestDisallowInterceptTouchEventmy(canScrollVertically)
                         setRefreshEnable(false)
-                    } else if (distanceY > touchSlop && distanceX < distanceY) {
+                    } else if (distanceY > touchSlop && distanceY * 0.8f <= distanceX) {
                         //水平滚动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
                         //设置父控件不可以滚动
