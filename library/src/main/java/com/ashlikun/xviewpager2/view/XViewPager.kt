@@ -332,7 +332,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
      */
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean, isHorizontal: Boolean, isSetSelf: Boolean = false) {
         isOtherXViewPager.forEach continuing@{
-            if (isSetSelf && it != this) {
+            if (isSetSelf && it.key != this) {
                 return@continuing
             }
             if (it.key.isHorizontal() && isHorizontal) {
