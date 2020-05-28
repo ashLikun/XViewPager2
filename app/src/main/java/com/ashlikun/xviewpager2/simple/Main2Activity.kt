@@ -44,7 +44,7 @@ class Main2Activity : AppCompatActivity() {
 //        fragmentLayout.setRefreshLayout(swipeRefresh)
         fragmentLayout.setOffscreenPageLimit(2)
         fragmentLayout.setAdapter(adapter)
-        fragmentLayout.isUserInputEnabled = false
+//        fragmentLayout.isUserInputEnabled = false
     }
 
     fun onClick1(view: View?) {

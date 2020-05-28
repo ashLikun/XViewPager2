@@ -233,14 +233,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 val endX = ev.x
                 val distanceX = abs(endX - startX)
                 val distanceY = abs(endY - startY)
-                //这里只处理水平的
+                //这里处理水平的
                 if (isHorizontal()) {
-                    if (distanceX > touchSlop && distanceX > distanceY) {
+                    if (distanceX > touchSlop && distanceX * 0.8f > distanceY) {
                         val or = (startX - endX).toInt()
                         val canScrollHorizontally = canScrollHorizontally(or)
                         if (!canScrollHorizontally) {
                             //设置父控件可以滚动
-                            setViewPagerUserInputEnabled(true, isHorizontal())
+                            setViewPagerUserInputEnabled(true, true)
                         }
                         requestDisallowInterceptTouchEventmy(canScrollHorizontally)
                         setRefreshEnable(false)
@@ -248,7 +248,23 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         //垂直滑动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
                         //设置父控件不可以滚动
-                        setViewPagerUserInputEnabled(false, isHorizontal())
+                        setViewPagerUserInputEnabled(false, true)
+                    }
+                } else if (isVertical()) {
+                    if (distanceY > touchSlop && distanceY * 0.8f > distanceX) {
+                        val or = (startY - endY).toInt()
+                        val canScrollVertically = canScrollVertically(or)
+                        if (!canScrollVertically) {
+                            //设置父控件可以滚动
+                            setViewPagerUserInputEnabled(true, false)
+                        }
+                        requestDisallowInterceptTouchEventmy(canScrollVertically)
+                        setRefreshEnable(false)
+                    } else if (distanceY > touchSlop && distanceX < distanceY) {
+                        //水平滚动，主动释放
+                        requestDisallowInterceptTouchEventmy(false)
+                        //设置父控件不可以滚动
+                        setViewPagerUserInputEnabled(false, false)
                     }
                 }
             }
@@ -296,7 +312,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
      */
     private fun initOtherXViewPager() {
         cleanOtherXViewPager()
-        var pp: ViewParent? = parent
+        var pp: ViewParent? = this
         while (pp != null) {
             if (pp is XViewPager) {
                 isOtherXViewPager.put(pp, false)
@@ -308,6 +324,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     private fun setViewPagerUserInputEnabled(isEnabled: Boolean, isHorizontal: Boolean) {
         isOtherXViewPager.forEach {
             if (it.key.isHorizontal() && isHorizontal) {
+                if (!isEnabled) {
+                    if (it.key.isUserInputEnabled) {
+                        it.key.isUserInputEnabled = false
+                        isOtherXViewPager[it.key] = true
+                    }
+                } else {
+                    if (it.value) {
+                        it.key.isUserInputEnabled = true
+                        isOtherXViewPager[it.key] = false
+                    }
+                }
+            } else if (it.key.isVertical() && !isHorizontal) {
                 if (!isEnabled) {
                     if (it.key.isUserInputEnabled) {
                         it.key.isUserInputEnabled = false
