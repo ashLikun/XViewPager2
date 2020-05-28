@@ -240,7 +240,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         val canScrollHorizontally = canScrollHorizontally(or)
                         if (!canScrollHorizontally) {
                             //设置父控件可以滚动
-                            setViewPagerUserInputEnabled(true, true)
+                            setViewPagerUserInputEnabled(true, isHorizontal = true)
+                        } else {
+                            //设置自己可以滚动
+                            setViewPagerUserInputEnabled(true, isHorizontal = true, isSetSelf = true)
                         }
                         requestDisallowInterceptTouchEventmy(canScrollHorizontally)
                         setRefreshEnable(false)
@@ -248,7 +251,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         //垂直滑动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
                         //设置父控件不可以滚动
-                        setViewPagerUserInputEnabled(false, true)
+                        setViewPagerUserInputEnabled(false, isHorizontal = true)
                     }
                 } else if (isVertical()) {
                     if (distanceY > touchSlop && distanceY * 0.8f > distanceX) {
@@ -256,7 +259,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         val canScrollVertically = canScrollVertically(or)
                         if (!canScrollVertically) {
                             //设置父控件可以滚动
-                            setViewPagerUserInputEnabled(true, false)
+                            setViewPagerUserInputEnabled(true, isHorizontal = false)
+                        } else {
+                            //设置自己可以滚动
+                            setViewPagerUserInputEnabled(true, isHorizontal = false, isSetSelf = true)
                         }
                         requestDisallowInterceptTouchEventmy(canScrollVertically)
                         setRefreshEnable(false)
@@ -264,7 +270,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                         //水平滚动，主动释放
                         requestDisallowInterceptTouchEventmy(false)
                         //设置父控件不可以滚动
-                        setViewPagerUserInputEnabled(false, false)
+                        setViewPagerUserInputEnabled(false, isHorizontal = false)
                     }
                 }
             }
@@ -321,8 +327,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         }
     }
 
-    private fun setViewPagerUserInputEnabled(isEnabled: Boolean, isHorizontal: Boolean) {
-        isOtherXViewPager.forEach {
+    /**
+     * @param isSetSelf 是否只设置自己
+     */
+    private fun setViewPagerUserInputEnabled(isEnabled: Boolean, isHorizontal: Boolean, isSetSelf: Boolean = false) {
+        isOtherXViewPager.forEach continuing@{
+            if (isSetSelf && it != this) {
+                return@continuing
+            }
             if (it.key.isHorizontal() && isHorizontal) {
                 if (!isEnabled) {
                     if (it.key.isUserInputEnabled) {
