@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        convenientBanner.indicator = TransIndicator(this)
 //        bannerViewPager.setAdapter(BannerAdapter1(this))
-        convenientBanner.setAdapter(BannerAdapter1(this, RESURL2))
+        convenientBanner.adapter = BannerAdapter1(this, RESURL2)
 
         convenientBanner.setPageTransformer(MarginMultiPageTransformer(50, 150, 150, 0.9f))
         convenientBanner.setOnItemClickListener(object : OnItemClickListener<String> {

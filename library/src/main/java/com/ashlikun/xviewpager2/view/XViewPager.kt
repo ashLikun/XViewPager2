@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OffscreenPageLimit
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.recyclerView
 import com.ashlikun.xviewpager2.R
 import com.ashlikun.xviewpager2.ViewPagerUtils
 import com.ashlikun.xviewpager2.transform.BasePageTransformer
@@ -37,7 +38,7 @@ import kotlin.math.abs
 open class XViewPager
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
+    FrameLayout(context, attrs, defStyleAttr), ViewTreeObserver.OnGlobalLayoutListener {
 
     private var startX = 0f
     private var startY = 0f
@@ -117,7 +118,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     //RecyclerView
     val recyclerView: RecyclerView by lazy {
         try {
-            viewPager.getChildAt(0) as RecyclerView
+            viewPager.recyclerView ?: viewPager.getChildAt(0) as RecyclerView
         } catch (e: Exception) {
             e.printStackTrace()
             //防止异常
@@ -200,12 +201,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 //宽度不变
                 heightSize = (widthSize / ratio).toInt()
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize,
-                        MeasureSpec.EXACTLY)
+                    MeasureSpec.EXACTLY)
             } else {
                 //高度不变
                 widthSize = (heightSize / ratio).toInt()
                 widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize,
-                        MeasureSpec.EXACTLY)
+                    MeasureSpec.EXACTLY)
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -366,7 +367,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     override fun dispatchDraw(canvas: Canvas) {
         if (radiusLeftTop != -1f || radiusRightTop != -1f || radiusRightBottom != -1f || radiusLeftBottom != -1f) {
             clipPath.reset()
-            val radii = floatArrayOf(radiusLeftTop, radiusLeftTop, radiusRightTop, radiusRightTop, radiusRightBottom, radiusRightBottom, radiusLeftBottom, radiusLeftBottom)
+            val radii = floatArrayOf(radiusLeftTop,
+                radiusLeftTop,
+                radiusRightTop,
+                radiusRightTop,
+                radiusRightBottom,
+                radiusRightBottom,
+                radiusLeftBottom,
+                radiusLeftBottom)
             clipPath.addRoundRect(RectF(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat()), radii, Path.Direction.CW)
             //viewPage内部是滚动实现，这里要加上偏移量
             val matrix = Matrix()
@@ -423,12 +431,15 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     /********************************************************************************************
      *                            ViewPager本身的主要使用方法
      *******************************************************************************************/
-    open fun getAdapter() = viewPager.adapter
 
-    open fun setAdapter(adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>) {
-        viewPager.adapter = adapter
-        adapter.notifyDataSetChanged()
-    }
+
+    open var adapter: RecyclerView.Adapter<*>?
+        get() = viewPager.adapter
+        set(value) {
+            viewPager.adapter = value
+            adapter?.notifyDataSetChanged()
+        }
+
 
     open fun setOrientation(@ViewPager2.Orientation orientation: Int) {
         viewPager.orientation = orientation
@@ -453,10 +464,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     @JvmOverloads
     open fun setCurrentItem(item: Int, smoothScroll: Boolean = true) {
         if (scrollDuration > 0 && smoothScroll) {
-            if (getAdapter()?.itemCount ?: 0 <= 0) {
+            if (adapter?.itemCount ?: 0 <= 0) {
                 return
             }
-            var item = item.coerceAtLeast(0).coerceAtMost(getAdapter()!!.itemCount - 1)
+            var item = item.coerceAtLeast(0).coerceAtMost(adapter!!.itemCount - 1)
             if (item == getCurrentItem()) {
                 return
             }
@@ -473,9 +484,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
                 }
                 if (!isIdle) {
                     previousItem = (ViewPagerUtils.getMethod(mScrollEventAdapter, "getRelativeScrollPosition") as Double?)?.toInt()
-                            ?: previousItem
+                        ?: previousItem
                 }
-                ViewPagerUtils.getMethod(mScrollEventAdapter, "notifyProgrammaticScroll", arrayOf(Int::class.java, Boolean::class.java), item, smoothScroll)
+                ViewPagerUtils.getMethod(mScrollEventAdapter,
+                    "notifyProgrammaticScroll",
+                    arrayOf(Int::class.java, Boolean::class.java),
+                    item,
+                    smoothScroll)
                 //源码反射结束
 
                 // 为了平滑滚动，跳远到附近的项目。

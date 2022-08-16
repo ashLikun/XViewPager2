@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.ashlikun.xviewpager2.R
 import com.ashlikun.xviewpager2.ViewPagerUtils
@@ -121,7 +122,7 @@ open class BannerViewPager
      */
     @JvmOverloads
     open fun getRealPosition(position: Int = getCurrentItem()) = getPagerAdapter()?.getRealPosition(position)
-            ?: 0
+        ?: 0
 
 
     /**
@@ -209,22 +210,26 @@ open class BannerViewPager
 
     open fun notifyDataSetChanged() = getPagerAdapter()?.notifyDataSetChanged()
 
-    fun getPagerAdapter() = super.getAdapter() as BasePageAdapter<Any>?
+    fun getPagerAdapter() = super.adapter as BasePageAdapter<Any>?
 
     fun getDatas() = getPagerAdapter()?.getDatas()
 
     /**
      * 设置banner的数据
      */
-    open fun setAdapter(adapter: BasePageAdapter<*>) {
-        adapter.setCanLoop(canLoop)
-        adapter.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
-        super.setAdapter(adapter)
-        setCurrentItem(0, false)
-        if (isTurning) {
-            startTurning()
+    override var adapter: RecyclerView.Adapter<*>?
+        get() = super.adapter
+        set(value) {
+            if (value is BasePageAdapter<*>) {
+                value.setCanLoop(canLoop)
+                value.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
+            }
+            super.adapter = value
+            setCurrentItem(0, false)
+            if (isTurning) {
+                startTurning()
+            }
         }
-    }
 
 
     override fun setCurrentItem(item: Int, smoothScroll: Boolean) {

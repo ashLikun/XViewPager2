@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.setLayoutManager
 import com.ashlikun.xviewpager2.adapter.BasePageAdapter
 import com.ashlikun.xviewpager2.view.XViewPager
 import java.lang.reflect.Field
@@ -24,6 +25,10 @@ import java.util.*
  *
  * 功能介绍：ViewPager的工具
  */
+inline fun XViewPager.setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+    viewPager.setLayoutManager(layoutManager)
+}
+
 object ViewPagerUtils {
     @JvmStatic
     fun dip2px(context: Context, dipValue: Float): Int {

@@ -38,15 +38,15 @@ class Test2Fragment : Fragment() {
     var isCache = false
     val adapter: FragmentPagerAdapter by lazy {
         FragmentPagerAdapter.Builder.create(childFragmentManager, lifecycle)
-                .addItem("/Fragment/test").setId("111").ok()
-                .addItem("/Fragment/test").setId("222").ok()
-                .addItem("/Fragment/test").setId("333").ok()
-                .addItem("/Fragment/test").setId("444").ok()
-                .addItem("/Fragment/test").setId("555").ok()
-                .addItem("/Fragment/test").setId("666").ok()
-                .addItem("/Fragment/test").setId("777").ok()
-                .setCache(true)
-                .build()
+            .addItem("/Fragment/test").setId("111").ok()
+            .addItem("/Fragment/test").setId("222").ok()
+            .addItem("/Fragment/test").setId("333").ok()
+            .addItem("/Fragment/test").setId("444").ok()
+            .addItem("/Fragment/test").setId("555").ok()
+            .addItem("/Fragment/test").setId("666").ok()
+            .addItem("/Fragment/test").setId("777").ok()
+            .setCache(true)
+            .build()
     }
 
     override fun onAttach(context: Context) {
@@ -74,7 +74,7 @@ class Test2Fragment : Fragment() {
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(rootView, savedInstanceState)
         fragmentLayout.setOffscreenPageLimit(2)
-        fragmentLayout.setAdapter(adapter)
+        fragmentLayout.adapter = adapter
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

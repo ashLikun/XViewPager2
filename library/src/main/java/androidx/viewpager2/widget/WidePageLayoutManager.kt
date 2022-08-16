@@ -2,6 +2,7 @@ package androidx.viewpager2.widget
 
 import androidx.recyclerview.widget.RecyclerView
 import com.ashlikun.xviewpager2.ViewPagerUtils
+import com.ashlikun.xviewpager2.view.XViewPager
 
 /**
  * 作者　　: 李坤
@@ -13,12 +14,20 @@ import com.ashlikun.xviewpager2.ViewPagerUtils
 /**
  * 设置ViewPager2的LayoutManager
  */
-fun ViewPager2.setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
-    mRecyclerView.layoutManager = layoutManager
-    mRecyclerView.clearOnChildAttachStateChangeListeners() // to ability set exact view size
+inline fun ViewPager2.setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+    recyclerView.layoutManager = layoutManager
+    recyclerView.clearOnChildAttachStateChangeListeners() // to ability set exact view size
     ViewPagerUtils.setField(this, "mLayoutManager", layoutManager)
-    ViewPagerUtils.setField(mScrollEventAdapter, "mLayoutManager", layoutManager) // to correct work ViewPager2.OnPageChangeCallback
+    ViewPagerUtils.setField(scrollEventAdapter, "mLayoutManager", layoutManager) // to correct work ViewPager2.OnPageChangeCallback
 }
+
+
+val ViewPager2.recyclerView
+    get() = mRecyclerView
+
+
+val ViewPager2.scrollEventAdapter: Any
+    get() = mScrollEventAdapter
 
 /**
  * 设置预留出来一点的效果
@@ -35,7 +44,7 @@ open class WidePageLayoutManager(
         ViewPagerUtils.getViewSize(viewPager) { width, height ->
             if (viewPager.orientation == ViewPager2.ORIENTATION_HORIZONTAL) {
                 val margin = ((width - viewSmallPercentage * width) / 2f - margin).toInt()
-                recyclerView.setPadding(margin, recyclerView.paddingTop, margin, recyclerView.bottom)
+                recyclerView.setPadding(margin, recyclerView.paddingTop, margin, recyclerView.paddingBottom)
             } else if (viewPager.orientation == ViewPager2.ORIENTATION_VERTICAL) {
                 val margin = ((height - viewSmallPercentage * width) / 2f - margin).toInt()
                 recyclerView.setPadding(recyclerView.paddingLeft, margin, recyclerView.paddingRight, margin)
@@ -60,9 +69,5 @@ open class WidePageLayoutManager(
             }
         }
         return super.checkLayoutParams(lp)
-    }
-
-    override fun canScrollHorizontally(): Boolean {
-        return super.canScrollHorizontally() && viewPager.isEnabled
     }
 }

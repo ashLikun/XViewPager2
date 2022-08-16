@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.ashlikun.xviewpager2.ViewPagerUtils.dip2px
 import com.ashlikun.xviewpager2.adapter.BasePageAdapter
 import com.ashlikun.xviewpager2.adapter.DataSetChangeObserver
@@ -84,15 +85,16 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     /**
      * 设置banner的数据
      */
-    override fun setAdapter(adapter: BasePageAdapter<*>) {
-        try {
-            getAdapter()?.unregisterAdapterDataObserver(dataSetChangeObserver)
-        } catch (e: IllegalStateException) {
+    override var adapter: RecyclerView.Adapter<*>?
+        get() = super.adapter
+        set(value) {
+            try {
+                adapter?.unregisterAdapterDataObserver(dataSetChangeObserver)
+            } catch (e: IllegalStateException) {
+            }
+            value?.registerAdapterDataObserver(dataSetChangeObserver)
+            super.adapter = value
         }
-        adapter.registerAdapterDataObserver(dataSetChangeObserver)
-        super.setAdapter(adapter)
-        return
-    }
 
     /**
      * 设置底部指示器是否可见

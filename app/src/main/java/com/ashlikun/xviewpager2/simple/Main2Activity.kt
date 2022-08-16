@@ -21,15 +21,15 @@ import kotlinx.android.synthetic.main.activity_main2.*
 class Main2Activity : AppCompatActivity() {
     val adapter: FragmentPagerAdapter by lazy {
         create(this)
-                .addItem("/Fragment/test2").setId("1").ok()
-                .addItem("/Fragment/test").setId("2").ok()
-                .addItem("/Fragment/test").setId("3").ok()
-                .addItem("/Fragment/test").setId("4").ok()
-                .addItem("/Fragment/test").setId("5").ok()
-                .addItem("/Fragment/test").setId("6").ok()
-                .addItem("/Fragment/test").setId("7").ok()
-                .setCache(true)
-                .build()
+            .addItem("/Fragment/test2").setId("1").ok()
+            .addItem("/Fragment/test").setId("2").ok()
+            .addItem("/Fragment/test").setId("3").ok()
+            .addItem("/Fragment/test").setId("4").ok()
+            .addItem("/Fragment/test").setId("5").ok()
+            .addItem("/Fragment/test").setId("6").ok()
+            .addItem("/Fragment/test").setId("7").ok()
+            .setCache(true)
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class Main2Activity : AppCompatActivity() {
 //        }
 //        fragmentLayout.setRefreshLayout(swipeRefresh)
         fragmentLayout.setOffscreenPageLimit(2)
-        fragmentLayout.setAdapter(adapter)
+        fragmentLayout.adapter = adapter
 //        fragmentLayout.isUserInputEnabled = false
     }
 
