@@ -43,7 +43,7 @@ dependencies {
     compileOnly rootProject.ext.designVersion
     //如果用到FragmentPagerAdapter
     compileOnly 'com.alibaba:arouter-api:+'
-    compileOnly "androidx.core:core-ktx:+"
+    compileOnly "androidx.core:core-ktx:1.7.0"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

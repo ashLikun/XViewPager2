@@ -13,6 +13,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
+        multiDexEnabled = true
         kapt {
             arguments {
                 arg("AROUTER_MODULE_NAME", project.getName())
@@ -20,22 +21,21 @@ android {
         }
 
     }
+    buildFeatures {
+        viewBinding = true
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    /**
-     * aar文件的编译
-     */
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
-        maven {
-            url "https://jitpack.io"
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.github.ashLikun:GlideUtils:1.0.0'
     implementation 'com.github.ashLikun:CommonAdapter:3.0.3'
     implementation 'com.github.ashLikun:XRecycleView:2.1.4'
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
