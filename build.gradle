@@ -24,14 +24,14 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    superVersion = "1.1.+"
-    compileSdkVersion = 28
-    buildToolsVersion = "28.0.3"
+    superVersion = "1.2.+"
+    compileSdkVersion = 31
+    buildToolsVersion = "30.0.2"
     designVersion = "com.google.android.material:material:" + superVersion
     v4Version = "androidx.legacy:legacy-support-v4:" + superVersion
     v7AppCompat = "androidx.appcompat:appcompat:" + superVersion
     targetSdkVersion = 24
-    minSdkVersion = 16
+    minSdkVersion = 21
     versionCode = 1
     versionName = "0.0.1"
 }

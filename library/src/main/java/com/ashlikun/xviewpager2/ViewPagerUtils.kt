@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -224,7 +225,7 @@ object ViewPagerUtils {
             return null
         }
         try {
-            val pp = if (parameterTypes == null) arrayOf() else parameterTypes
+            val pp = parameterTypes ?: arrayOf()
             val method = getAllDeclaredMethod(obj!!.javaClass, methodName, *pp)
             if (method != null) {
                 method.isAccessible = true
@@ -240,5 +241,25 @@ object ViewPagerUtils {
             e.printStackTrace()
         }
         return null
+    }
+
+    fun getViewSize(view: View, onSizeListener: (width: Int, height: Int) -> Unit) {
+        view.run {
+            if (measuredWidth > 0 || measuredHeight > 0) {
+                onSizeListener.invoke(measuredWidth, measuredHeight)
+                return
+            }
+            val observer = viewTreeObserver
+            observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (measuredHeight <= 0 && measuredWidth <= 0) {
+                        return
+                    }
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    onSizeListener.invoke(width, height)
+                }
+            })
+        }
+
     }
 }
