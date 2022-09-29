@@ -6,22 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.ashlikun.xviewpager2.fragment.FragmentPagerAdapter
 import com.ashlikun.xviewpager2.fragment.FragmentPagerItem
-import com.ashlikun.xviewpager2.listener.OnItemClickListener
-import com.ashlikun.xviewpager2.transform.MarginMultiPageTransformer
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.fragment_test2.*
-import kotlinx.android.synthetic.main.fragment_test2.fragmentLayout
 
 /**
  * 作者　　: 李坤

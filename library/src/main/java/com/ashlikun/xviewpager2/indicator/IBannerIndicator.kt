@@ -20,7 +20,8 @@ import java.util.*
  * 功能介绍：Banner指示器的View接口，其他view只需实现这个接口就可以了
  * 继承自LinearLayout
  */
-abstract class IBannerIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
+abstract class IBannerIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    LinearLayout(context, attrs, defStyleAttr) {
     /**
      * 资源，必须要有大小
      */
@@ -36,7 +37,7 @@ abstract class IBannerIndicator @JvmOverloads constructor(context: Context, attr
     var space = 3
 
     @JvmField
-    protected var datas: List<Any>? = null
+    protected var dataCount: Int = 0
 
     @JvmField
     protected var pointViews: ArrayList<View> = ArrayList()
@@ -76,11 +77,9 @@ abstract class IBannerIndicator @JvmOverloads constructor(context: Context, attr
 
     /**
      * 添加数据
-     *
-     * @param datas
      */
-    open fun setPages(datas: List<Any>, selectIndex: Int): IBannerIndicator? {
-        this.datas = datas
+    open fun setPages(dataCount: Int, selectIndex: Int): IBannerIndicator? {
+        this.dataCount = dataCount
         notifyDataSetChanged(selectIndex)
         return this
     }
@@ -105,7 +104,7 @@ abstract class IBannerIndicator @JvmOverloads constructor(context: Context, attr
     var onPageChangeCallback: OnPageChangeCallback = object : OnPageChangeCallback() {
         override fun onPageScrollStateChanged(state: Int) {}
         val itemCount: Int
-            get() = if (datas == null) 0 else datas!!.size
+            get() = dataCount
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             if (position >= itemCount) {
@@ -115,9 +114,6 @@ abstract class IBannerIndicator @JvmOverloads constructor(context: Context, attr
         }
 
         override fun onPageSelected(position: Int) {
-            if (datas == null) {
-                return
-            }
             if (position >= itemCount) {
                 return
             }

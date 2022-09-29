@@ -19,7 +19,8 @@ import kotlin.math.max
  *
  * 功能介绍：平移的Indicator
  */
-class TransIndicator @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : IBannerIndicator(context!!, attrs, defStyleAttr) {
+class TransIndicator @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    IBannerIndicator(context!!, attrs, defStyleAttr) {
     /**
      * 整个移动的距离
      */
@@ -45,7 +46,7 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val height = measuredHeight
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), Math.max(height,
-                Math.max(noSelectDraw!!.intrinsicHeight, selectDraw!!.intrinsicHeight)))
+            Math.max(noSelectDraw!!.intrinsicHeight, selectDraw!!.intrinsicHeight)))
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -71,13 +72,13 @@ class TransIndicator @JvmOverloads constructor(context: Context?, attrs: Attribu
     override fun notifyDataSetChanged(selectIndex: Int): TransIndicator? {
         removeAllViews()
         pointViews.clear()
-        if (datas == null) {
+        if (dataCount == 0) {
             return this
         }
         currentSelect = selectIndex
         val params = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         params.setMargins(space, 0, space, 0)
-        datas?.forEachIndexed { index, any ->
+        (0 until dataCount).forEach { index ->
             // 翻页指示的点
             val pointView: View = ImageView(context)
             pointView.background = noSelectDraw

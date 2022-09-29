@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.setLayoutManager
-import com.ashlikun.xviewpager2.adapter.BasePageAdapter
+import com.ashlikun.xviewpager2.adapter.PageWrapAdapter
 import com.ashlikun.xviewpager2.view.XViewPager
 import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
@@ -96,18 +96,18 @@ object ViewPagerUtils {
      * @return
      */
     fun getRealPosition(position: Int, allNumber: Int): Int {
-        if (allNumber <= BasePageAdapter.MULTIPLE_COUNT * 2 + 1) {
+        if (allNumber <= PageWrapAdapter.MULTIPLE_COUNT * 2 + 1) {
             return 0
         }
-        if (position < BasePageAdapter.MULTIPLE_COUNT) {
-            var diff = BasePageAdapter.MULTIPLE_COUNT - position
+        if (position < PageWrapAdapter.MULTIPLE_COUNT) {
+            var diff = PageWrapAdapter.MULTIPLE_COUNT - position
             //最后一个
-            return allNumber - BasePageAdapter.MULTIPLE_COUNT * 2 - diff
-        } else if (position >= allNumber - BasePageAdapter.MULTIPLE_COUNT) {
+            return allNumber - PageWrapAdapter.MULTIPLE_COUNT * 2 - diff
+        } else if (position >= allNumber - PageWrapAdapter.MULTIPLE_COUNT) {
             //第一个
-            return position - (allNumber - BasePageAdapter.MULTIPLE_COUNT)
+            return position - (allNumber - PageWrapAdapter.MULTIPLE_COUNT)
         }
-        return position - BasePageAdapter.MULTIPLE_COUNT
+        return position - PageWrapAdapter.MULTIPLE_COUNT
     }
 
     /**

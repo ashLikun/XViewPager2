@@ -12,8 +12,10 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.ashlikun.adapter.ViewHolder
+import com.ashlikun.adapter.recyclerview.CommonAdapter
+import com.ashlikun.glideutils.GlideUtils
 import com.ashlikun.xviewpager2.fragment.FragmentPagerItem
-import com.ashlikun.xviewpager2.listener.OnItemClickListener
 import com.ashlikun.xviewpager2.transform.MarginMultiPageTransformer
 import kotlinx.android.synthetic.main.fragment_test1.*
 
@@ -31,6 +33,17 @@ class TestFragment : Fragment() {
     var rootView: View? = null
     var isCache = false
     var count = 0
+    val adapter by lazy {
+        object : CommonAdapter<String>(requireContext(), if (id?.toInt() ?: 0 > 666) BannerAdapter.RESURL3 else BannerAdapter.RESURL2) {
+            override fun getLayoutId() = R.layout.imem_image_view
+
+            override fun convert(holder: ViewHolder, t: String) {
+                val imageView = holder.getImageView(R.id.imageView)
+                GlideUtils.show(imageView, t)
+            }
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         id = arguments!!.getString(FragmentPagerItem.ID)
@@ -77,13 +90,9 @@ class TestFragment : Fragment() {
         recycleView.recyclerView.layoutManager = LinearLayoutManager(context)
         recycleView.recyclerView.adapter = MyListAdapter(context!!)
 
-        convenientBanner.adapter = BannerAdapter1(context!!, if (id?.toInt() ?: 0 > 666) BannerAdapter.RESURL3 else BannerAdapter.RESURL2)
+        convenientBanner.adapter = adapter
 
         convenientBanner.setPageTransformer(MarginMultiPageTransformer(50, 150, 150, 0.9f))
-        convenientBanner.setOnItemClickListener(object : OnItemClickListener<String> {
-            override fun onItemClick(data: String, position: Int) {
-            }
-        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

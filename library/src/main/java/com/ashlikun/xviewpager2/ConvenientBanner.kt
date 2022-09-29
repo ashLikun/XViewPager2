@@ -1,6 +1,5 @@
 package com.ashlikun.xviewpager2
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ashlikun.xviewpager2.ViewPagerUtils.dip2px
-import com.ashlikun.xviewpager2.adapter.BasePageAdapter
 import com.ashlikun.xviewpager2.adapter.DataSetChangeObserver
 import com.ashlikun.xviewpager2.indicator.DefaultIndicator
 import com.ashlikun.xviewpager2.indicator.IBannerIndicator
@@ -76,9 +74,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 
     private val dataSetChangeObserver: DataSetChangeObserver = object : DataSetChangeObserver() {
         override fun onChanged() {
-            if (!getDatas().isNullOrEmpty()) {
-                indicator?.setPages(getDatas()!!, getCurrentItemReal())
-            }
+            indicator?.setPages(getRealItemCount(), getCurrentItemReal())
         }
     }
 
@@ -89,7 +85,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         get() = super.adapter
         set(value) {
             try {
-                adapter?.unregisterAdapterDataObserver(dataSetChangeObserver)
+                super.adapter?.unregisterAdapterDataObserver(dataSetChangeObserver)
             } catch (e: IllegalStateException) {
             }
             value?.registerAdapterDataObserver(dataSetChangeObserver)

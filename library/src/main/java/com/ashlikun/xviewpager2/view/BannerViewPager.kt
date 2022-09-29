@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.ashlikun.xviewpager2.R
 import com.ashlikun.xviewpager2.ViewPagerUtils
-import com.ashlikun.xviewpager2.adapter.BasePageAdapter
+import com.ashlikun.xviewpager2.adapter.PageWrapAdapter
 import com.ashlikun.xviewpager2.listener.ControlOnPageChangeCallback
-import com.ashlikun.xviewpager2.listener.OnItemClickListener
 import com.ashlikun.xviewpager2.listener.RealOnPageChangeCallback
-import com.ashlikun.xviewpager2.transform.DepthPageTransformer
 import java.lang.ref.WeakReference
 
 /**
@@ -34,6 +32,8 @@ open class BannerViewPager
         const val DEFAULT_TURNING_TIME: Long = 5000
     }
 
+    protected var mAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>? = null
+    protected var mWrapAdapter: PageWrapAdapter? = null
 
     //是否可以循环
     private var canLoop = true
@@ -90,7 +90,7 @@ open class BannerViewPager
 
 
     fun getLastItem(): Int {
-        return (getPagerAdapter()?.getRealCount() ?: 1) - 1
+        return (mWrapAdapter?.getRealCount() ?: 1) - 1
     }
 
     /**
@@ -121,7 +121,7 @@ open class BannerViewPager
      * 获取实际的位置(对应数据的位置)
      */
     @JvmOverloads
-    open fun getRealPosition(position: Int = getCurrentItem()) = getPagerAdapter()?.getRealPosition(position)
+    open fun getRealPosition(position: Int = getCurrentItem()) = mWrapAdapter?.getRealPosition(position)
         ?: 0
 
 
@@ -133,17 +133,13 @@ open class BannerViewPager
 
     /**
      * adapter真实的个数
-     *
-     * @return
      */
-    open fun getRealItemCount() = getPagerAdapter()?.getRealCount() ?: 0
+    open fun getRealItemCount() = mWrapAdapter?.getRealCount() ?: 0
 
     /**
      * adapter的最大item个数，是假的
-     *
-     * @return
      */
-    open fun getItemCount() = getPagerAdapter()?.itemCount ?: 0
+    open fun getItemCount() = mWrapAdapter?.itemCount ?: 0
 
     /**
      * 还原原始的position翻页监听
@@ -165,8 +161,8 @@ open class BannerViewPager
         if (!canLoop) {
             setCurrentItem(getRealItemCount(), false)
         }
-        getPagerAdapter()?.setCanLoop(canLoop)
-        getPagerAdapter()?.notifyDataSetChanged()
+        mWrapAdapter?.setCanLoop(canLoop)
+        mWrapAdapter?.notifyDataSetChanged()
     }
 
     /**
@@ -208,32 +204,34 @@ open class BannerViewPager
         return this
     }
 
-    open fun notifyDataSetChanged() = getPagerAdapter()?.notifyDataSetChanged()
-
-    fun getPagerAdapter() = super.adapter as BasePageAdapter<Any>?
-
-    fun getDatas() = getPagerAdapter()?.getDatas()
+    open fun notifyDataSetChanged() = mWrapAdapter?.notifyDataSetChanged()
 
     /**
      * 设置banner的数据
      */
     override var adapter: RecyclerView.Adapter<*>?
-        get() = super.adapter
+        get() = mWrapAdapter?.adapter
         set(value) {
-            if (value is BasePageAdapter<*>) {
-                value.setCanLoop(canLoop)
-                value.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
+            mAdapter = value as RecyclerView.Adapter<RecyclerView.ViewHolder>?
+            if (mAdapter != null) {
+                mWrapAdapter = PageWrapAdapter(mAdapter!!)
+                    .also {
+                        it.setCanLoop(canLoop)
+                        it.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
+                    }
             }
-            super.adapter = value
-            setCurrentItem(0, false)
-            if (isTurning) {
-                startTurning()
+            super.adapter = mWrapAdapter
+            if (mAdapter != null) {
+                setCurrentItem(0, false)
+                if (isTurning) {
+                    startTurning()
+                }
             }
         }
 
 
     override fun setCurrentItem(item: Int, smoothScroll: Boolean) {
-        super.setCurrentItem(getPagerAdapter()?.getRealFanPosition(item) ?: item, smoothScroll)
+        super.setCurrentItem(mWrapAdapter?.getRealFanPosition(item) ?: item, smoothScroll)
     }
 
     /**
@@ -263,7 +261,7 @@ open class BannerViewPager
      * @return
      */
     fun isOneDataOffLoopAndTurning(): Boolean {
-        return isOneDataOffLoopAndTurning && getPagerAdapter()?.getRealCount() ?: 0 <= 1
+        return isOneDataOffLoopAndTurning && mWrapAdapter?.getRealCount() ?: 0 <= 1
     }
 
     /**
@@ -273,7 +271,7 @@ open class BannerViewPager
      */
     fun setOneDataOffLoopAndTurning(oneDataOffLoopAndTurning: Boolean) {
         isOneDataOffLoopAndTurning = oneDataOffLoopAndTurning
-        getPagerAdapter()?.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
+        mWrapAdapter?.isOneDataOffLoopAndTurning = isOneDataOffLoopAndTurning
     }
 
     /**
@@ -286,9 +284,6 @@ open class BannerViewPager
         startTurning()
     }
 
-    fun setOnItemClickListener(onItemClickListener: OnItemClickListener<*>) {
-        getPagerAdapter()?.setOnItemClickListener(onItemClickListener as OnItemClickListener<Any>)
-    }
 
     /**
      * 实现生命周期绑定,null就是清空
@@ -323,7 +318,7 @@ open class BannerViewPager
                 bannerViewPager.setCurrentItemReal(page)
                 //不循环的时候 如果是最后一个就判断是否继续
                 if (!bannerViewPager.isCanLoop()) {
-                    if (page >= bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT - 1) {
+                    if (page >= bannerViewPager.getItemCount() - PageWrapAdapter.MULTIPLE_COUNT - 1) {
                         bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime)
                     }
                 } else {

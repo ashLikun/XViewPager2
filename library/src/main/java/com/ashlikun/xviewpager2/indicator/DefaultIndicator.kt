@@ -21,28 +21,22 @@ class DefaultIndicator
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val height = measuredHeight
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height.coerceAtLeast(
-                noSelectDraw?.intrinsicHeight?.coerceAtLeast(selectDraw?.intrinsicHeight
-                        ?: 0)
-                        ?: 0))
+            noSelectDraw?.intrinsicHeight?.coerceAtLeast(selectDraw?.intrinsicHeight
+                ?: 0)
+                ?: 0))
     }
-
-    override fun setPages(datas: List<Any>, selectIndex: Int): IBannerIndicator? {
-        super.setPages(datas, selectIndex)
-        return this
-    }
-
     /**
      * 底部指示器资源图片更新
      */
     override fun notifyDataSetChanged(selectIndex: Int): DefaultIndicator {
         removeAllViews()
         pointViews.clear()
-        if (datas == null) {
+        if (dataCount == 0) {
             return this
         }
         val params = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         params.setMargins(space, 0, space, 0)
-        datas?.forEachIndexed { index, any ->
+        (0 until dataCount).forEach { index ->
             // 翻页指示的点
             val pointView: View = ImageView(context)
             if (selectIndex == index) {
@@ -53,6 +47,7 @@ class DefaultIndicator
             pointViews.add(pointView)
             addView(pointView, params)
         }
+
         return this
     }
 

@@ -427,6 +427,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         invalidate()
     }
 
+    /**
+     * 因为adapter 可能被从写,这里获取真实的
+     */
+    private val vAdapter
+        get() = viewPager.adapter
 
     /********************************************************************************************
      *                            ViewPager本身的主要使用方法
@@ -464,10 +469,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     @JvmOverloads
     open fun setCurrentItem(item: Int, smoothScroll: Boolean = true) {
         if (scrollDuration > 0 && smoothScroll) {
-            if (adapter?.itemCount ?: 0 <= 0) {
+            if (vAdapter?.itemCount ?: 0 <= 0) {
                 return
             }
-            var item = item.coerceAtLeast(0).coerceAtMost(adapter!!.itemCount - 1)
+            var item = item.coerceAtLeast(0).coerceAtMost(vAdapter!!.itemCount - 1)
             if (item == getCurrentItem()) {
                 return
             }
