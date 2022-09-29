@@ -84,10 +84,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     override var adapter: RecyclerView.Adapter<*>?
         get() = super.adapter
         set(value) {
-            try {
-                super.adapter?.unregisterAdapterDataObserver(dataSetChangeObserver)
-            } catch (e: IllegalStateException) {
-            }
             value?.registerAdapterDataObserver(dataSetChangeObserver)
             super.adapter = value
         }

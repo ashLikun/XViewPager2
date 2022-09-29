@@ -21,6 +21,35 @@ class PageWrapAdapter(var adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
     //是否只有一条数据的时候禁用翻页
     internal var isOneDataOffLoopAndTurning = true
     private var canLoop = true
+    private val mDataObserver: RecyclerView.AdapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() {
+            notifyDataSetChanged()
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            notifyItemRangeInserted(positionStart, itemCount)
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            notifyItemRangeChanged(positionStart, itemCount)
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            notifyItemRangeChanged(positionStart, itemCount, payload)
+        }
+
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            notifyItemRangeRemoved(positionStart, itemCount)
+        }
+
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            notifyItemMoved(fromPosition, toPosition)
+        }
+    }
+
+    init {
+        adapter.registerAdapterDataObserver(mDataObserver)
+    }
 
     private fun isCanLoop() = canLoop && (getRealCount() > if (isOneDataOffLoopAndTurning) 1 else 0)
 
